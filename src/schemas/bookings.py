@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from datetime import date
+from datetime import date, datetime
 
 class BookingAddRequest(BaseModel):
     date_from: date
@@ -9,9 +9,11 @@ class BookingAddRequest(BaseModel):
 class BookingAdd(BaseModel):
     room_id: int
     user_id: int
+    price: int
     date_from: date
     date_to:date
-    price: int
+    created_at: datetime
+
 
 class Booking(BookingAdd):
     id: int
