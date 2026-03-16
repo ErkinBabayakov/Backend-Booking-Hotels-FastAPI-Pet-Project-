@@ -19,6 +19,7 @@ from src.api.auth import router as auth_router
 from src.api.rooms import router as rooms_router
 from src.api.bookings import router as bookings_router
 from src.api.facilities import router as facilities_router
+from src.api.images import router as images_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,9 +35,10 @@ app.include_router(hotels_router)
 app.include_router(rooms_router)
 app.include_router(bookings_router)
 app.include_router(facilities_router)
+app.include_router(images_router)
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, tags=["Главная страница документации"])
 def home():
     return """
     <h2><a href="http://127.0.0.1:8000/docs">Documentation</a><br></h2>

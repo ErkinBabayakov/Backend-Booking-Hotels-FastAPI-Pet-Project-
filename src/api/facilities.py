@@ -6,6 +6,8 @@ from src.api.dependencies import DBDep
 
 from src.schemas.facilities import  FacilityAdd
 
+from src.tasks.tasks import test_task
+
 router = APIRouter(prefix="/facilities", tags=["Удобства/Услуги"])
 
 @router.get("", summary="Получить услуги")
@@ -19,4 +21,6 @@ async def get_facilities(db:DBDep):
 async def add_facility(db:DBDep, facility_data: FacilityAdd = Body()):
     facilities = await db.facilities.add(facility_data)
     await db.commit()
+
+    test_task.delay()
     return {"status": "ok", "facilities": facilities}
