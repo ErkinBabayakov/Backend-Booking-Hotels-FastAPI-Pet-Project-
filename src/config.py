@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
@@ -6,6 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env")
+
+    MODE: Literal["TEST", "LOCAL", "DEV", "PROD"]
     DB_HOST: str
     DB_PORT: int
     DB_USER: str
