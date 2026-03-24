@@ -21,12 +21,14 @@ from src.api.bookings import router as bookings_router
 from src.api.facilities import router as facilities_router
 from src.api.images import router as images_router
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await redis_connector.connect()
     FastAPICache.init(RedisBackend(redis_connector.redis), prefix="fastapi-cache")
     yield
     await redis_connector.close()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -44,7 +46,6 @@ def home():
     <h2><a href="http://127.0.0.1:8000/docs">Documentation</a><br></h2>
     <h2><a href="http://127.0.0.1:8000/redoc">ReDoc</a></h2>
     """
-
 
 
 if __name__ == "__main__":

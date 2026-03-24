@@ -11,12 +11,12 @@ async def test_add_booking(db):
         user_id=user_id,
         price=1000,
         date_from=date(year=2026, month=5, day=7),
-        date_to=date(year=2026, month=5, day=12)
+        date_to=date(year=2026, month=5, day=12),
     )
-    #Создаем бронь
+    # Создаем бронь
     new_booking = await db.bookings.add(booking_data)
 
-    #Получаем бронь и проверяем существует ли она
+    # Получаем бронь и проверяем существует ли она
     get_booking_data = await db.bookings.get_one_or_none(id=new_booking.id)
     assert get_booking_data
     assert get_booking_data.id == new_booking.id
@@ -26,14 +26,14 @@ async def test_add_booking(db):
     assert get_booking_data.date_from == new_booking.date_from
     assert get_booking_data.date_to == new_booking.date_to
 
-    #Обновляем бронь
+    # Обновляем бронь
     update_date = date(year=2026, month=5, day=15)
     update_booking_data = BookingAdd(
         room_id=room_id,
         user_id=user_id,
         price=1000,
         date_from=date(year=2026, month=5, day=7),
-        date_to=update_date
+        date_to=update_date,
     )
     await db.bookings.edit(update_booking_data, id=new_booking.id)
     updated_booking = await db.bookings.get_one_or_none(id=new_booking.id)
@@ -41,7 +41,7 @@ async def test_add_booking(db):
     assert updated_booking.room_id == new_booking.room_id
     assert updated_booking.user_id == new_booking.user_id
 
-    #Удаляем бронь
+    # Удаляем бронь
     await db.bookings.delete(id=new_booking.id)
     booking = await db.bookings.get_one_or_none(id=new_booking.id)
     assert not booking

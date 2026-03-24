@@ -5,9 +5,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=BASE_DIR / ".env")
+    model_config = SettingsConfigDict(env_file=BASE_DIR / ".env")
 
     MODE: Literal["TEST", "LOCAL", "DEV", "PROD"]
     DB_HOST: str
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     @property
     def DB_URL(self):
-       return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str

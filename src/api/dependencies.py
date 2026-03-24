@@ -7,30 +7,38 @@ from src.database import async_session_maker
 from src.services.auth import AuthService
 from src.utils.db_manager import DBManager
 
-#Зависимость для пагинации
+
+# Зависимость для пагинации
 class PaginationParams(BaseModel):
     page: Annotated[int | None, Query(1, description="Страница", ge=1)]
-    per_page : Annotated[int | None, Query(None, ge=1, lt=30, description="Количество отелей на странице")]
+    per_page: Annotated[
+        int | None, Query(None, ge=1, lt=30, description="Количество отелей на странице")
+    ]
+
 
 PaginationDep = Annotated[PaginationParams, Depends()]
 
-#Зависимость для аутентификации и авторизации
+
+# Зависимость для аутентификации и авторизации
 def get_token(request: Request) -> str:
     token = request.cookies.get("access_token", None)
     if not token:
         raise HTTPException(status_code=401, detail="Вы не предоставили токен доступа")
     return token
 
-def get_current_user_id(token: str = Depends(get_token)) -> int:
 
+def get_current_user_id(token: str = Depends(get_token)) -> int:
     data = AuthService().decode_token(token)
     return data.get("user_id", None)
 
+
 UserIdDep = Annotated[int, Depends(get_current_user_id)]
 
-#Зависимость для async_session_maker
+
+# Зависимость для async_session_maker
 async def get_db():
     async with DBManager(session_factory=async_session_maker) as db:
         yield db
+
 
 DBDep = Annotated[DBManager, Depends(get_db)]

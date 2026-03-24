@@ -31,7 +31,6 @@ def upgrade() -> None:
     )
 
 
-
 def downgrade() -> None:
     """Downgrade schema."""
 
@@ -42,4 +41,3 @@ def downgrade() -> None:
         nullable=True,
         existing_server_default=sa.text("now()"),
     )
-

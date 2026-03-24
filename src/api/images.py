@@ -9,6 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 router = APIRouter(prefix="/images", tags=["Изображения отелей"])
 
+
 @router.post("", summary="Загрузить изображение")
 def upload_image(file: UploadFile):
     image_path = f"{BASE_DIR}/src/static/images/{file.filename}"

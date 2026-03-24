@@ -12,17 +12,12 @@ class BaseRepository:
         self.session = session
 
     async def get_filtered(self, *filter, **filter_by):
-        query = (
-            select(self.model)
-            .filter(*filter)
-            .filter_by(**filter_by)
-        )
+        query = select(self.model).filter(*filter).filter_by(**filter_by)
         result = await self.session.execute(query)
         return [self.mapper.map_to_domain_entity(model) for model in result.scalars().all()]
 
-
     async def get_all(self, *args, **kwargs):
-       return await self.get_filtered()
+        return await self.get_filtered()
 
     async def get_one_or_none(self, **filter_by):
         query = select(self.model).filter_by(**filter_by)
@@ -43,15 +38,14 @@ class BaseRepository:
         add_data_stat = insert(self.model).values([item.model_dump() for item in data])
         await self.session.execute(add_data_stat)
 
-
-    async def edit(self, data: BaseModel, exclude_unset: bool = False, **filter_by)-> None:
-        edit_data_stat = (update(self.model)
-                          .filter_by(**filter_by)
-                          .values(**data.model_dump(exclude_unset=exclude_unset)))
+    async def edit(self, data: BaseModel, exclude_unset: bool = False, **filter_by) -> None:
+        edit_data_stat = (
+            update(self.model)
+            .filter_by(**filter_by)
+            .values(**data.model_dump(exclude_unset=exclude_unset))
+        )
         await self.session.execute(edit_data_stat)
 
-
-    async def delete(self, **filter_by)-> None:
+    async def delete(self, **filter_by) -> None:
         delete_data_stat = delete(self.model).filter_by(**filter_by)
         await self.session.execute(delete_data_stat)
-
