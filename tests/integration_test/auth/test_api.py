@@ -1,5 +1,5 @@
 import pytest
-
+from httpx import AsyncClient
 
 @pytest.mark.parametrize(
     "email, password, status_code",
@@ -11,7 +11,7 @@ import pytest
         ("adsad@2adasdA", "123456", 422),
     ],
 )
-async def test_auth_flow(email: str, password: str, status_code, ac):
+async def test_auth_flow(email: str, password: str, status_code: int, ac: AsyncClient):
     # /register
     resp_register = await ac.post("/auth/register", json={"email": email, "password": password})
     assert resp_register.status_code == status_code
