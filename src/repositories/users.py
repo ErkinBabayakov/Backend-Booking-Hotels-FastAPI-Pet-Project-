@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from pydantic import EmailStr
 
-
+from src.exceptions import ObjectIsExistsException
 from src.repositories.base import BaseRepository
 from src.models.users import UsersOrm
 from src.repositories.mappers.mappers import UserDataMapper
@@ -15,5 +15,8 @@ class UserRepository(BaseRepository):
     async def get_user_with_hash_password(self, email: EmailStr):
         query = select(self.model).filter_by(email=email)
         result = await self.session.execute(query)
-        model = result.scalars().one()
+        try:
+            model = result.scalars().one()
+        except Exception:
+            raise ObjectIsExistsException
         return UserWithHashPassword.model_validate(model)

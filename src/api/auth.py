@@ -1,4 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Response
+
+from src.exceptions import ObjectIsExistsException
 from src.services.auth import AuthService
 from src.schemas.users import UserRequestAdd, UserAdd
 from src.api.dependencies import UserIdDep, DBDep
@@ -15,8 +17,8 @@ async def register_user(db: DBDep, data: UserRequestAdd):
 
         await db.users.add(new_user_data)
         await db.commit()
-    except:  # noqa: E722
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+    except ObjectIsExistsException:  # noqa: E722
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Пользователь с таким email уже сущестует")
     return {"status": "ok"}
 
 
