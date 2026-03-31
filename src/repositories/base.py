@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from asyncpg.exceptions import UniqueViolationError
 
 from src.database import Base
-from src.exceptions import ObjectNotFoundException, ObjectIsExistsException
+from src.exceptions import ObjectNotFoundException, ObjectAlreadyExistsException
 from src.repositories.mappers.base import DataMapper
 
 
@@ -55,7 +55,7 @@ class BaseRepository:
         except IntegrityError as ex:
             logging.exception(f"Не удалось добавить данные в БД, входные данные={data}")
             if isinstance(ex.orig.__cause__, UniqueViolationError):
-                raise ObjectIsExistsException from ex
+                raise ObjectAlreadyExistsException from ex
             else:
                 logging.exception("Неизвестная ошибка")
                 raise ex

@@ -6,7 +6,7 @@ from httpx import AsyncClient
     [
         ("kot1@pes.com", "1234", 200),
         ("kot2@pes.com", "12345", 200),
-        ("kot1@pes.com", "123456", 400),
+        ("kot1@pes.com", "123456", 409),
         ("abcde", "123456", 422),
         ("adsad@2adasdA", "123456", 422),
     ],

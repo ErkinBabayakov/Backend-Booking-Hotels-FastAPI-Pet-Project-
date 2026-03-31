@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from pydantic import EmailStr
 
-from src.exceptions import ObjectIsExistsException
+from sqlalchemy.exc import NoResultFound
+from src.exceptions import EmailNotRegisteredException
 from src.repositories.base import BaseRepository
 from src.models.users import UsersOrm
 from src.repositories.mappers.mappers import UserDataMapper
@@ -13,10 +14,10 @@ class UserRepository(BaseRepository):
     mapper = UserDataMapper
 
     async def get_user_with_hash_password(self, email: EmailStr):
-        query = select(self.model).filter_by(email=email)
-        result = await self.session.execute(query)
         try:
+            query = select(self.model).filter_by(email=email)
+            result = await self.session.execute(query)
             model = result.scalars().one()
-        except Exception:
-            raise ObjectIsExistsException
+        except NoResultFound as ex:
+            raise EmailNotRegisteredException from ex
         return UserWithHashPassword.model_validate(model)

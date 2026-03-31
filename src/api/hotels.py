@@ -4,8 +4,9 @@ from fastapi import Query, APIRouter, Body
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import PaginationDep, DBDep
-from src.exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException
+from src.exceptions import ObjectNotFoundException, HotelNotFoundException
 from src.schemas.hotels import HotelPATCH, HotelAdd
+from src.services.hotels import HotelService
 
 router = APIRouter(prefix="/hotels", tags=["Отели"])
 
@@ -17,21 +18,23 @@ async def get_hotels(
     db: DBDep,
     location: str | None = Query(None, description="Локация"),
     title: str | None = Query(default=None, description="Отель"),
-    date_from: date = Query(example="2026-08-01"),
-    date_to: date = Query(example="2026-08-10"),
+    date_from: date = Query(examples="2026-08-01"),
+    date_to: date = Query(examples="2026-08-10"),
 ):
-    check_date_to_after_date_from(date_from, date_to)
-    per_page = pagination.per_page or 5
-
-    return await db.hotels.get_filtered_by_time(
-        date_from=date_from,
-        date_to=date_to,
-        location=location,
-        title=title,
-        limit=per_page,
-        offset=per_page * (pagination.page - 1),
+    return await HotelService(db).get_hotels(
+        pagination,
+        location,
+        title,
+        date_from,
+        date_to,
     )
 
+@router.get("/{hotel_id}", summary="Получить отель по его id")
+async def get_hotel(db: DBDep, hotel_id: int):
+    try:
+        return await HotelService(db).get_hotel(hotel_id)
+    except ObjectNotFoundException:
+        raise HotelNotFoundException
 
 @router.post("", summary="Создаем отель")
 async def create_hotel(
@@ -49,35 +52,23 @@ async def create_hotel(
         }
     ),
 ):
-    hotel = await db.hotels.add(hotel_data)
-    await db.commit()
+    hotel = await HotelService(db).create_hotel(hotel_data)
     return {"status": "OK", "data": hotel}
 
 
 @router.put("/{hotel_id}", summary="Полное обновление информации об отеле")
 async def update_hotel(db: DBDep, hotel_id: int, hotel_data: HotelAdd):
-    await db.hotels.edit(hotel_data, id=hotel_id)
-    await db.commit()
+    await HotelService(db).update_hotel(hotel_id, hotel_data)
     return {"status": "OK"}
 
 
 @router.patch("{hotel_id}", summary="Частичное обновление информации об отеле")
 async def partial_update_hotel(db: DBDep, hotel_id: int, hotel_data: HotelPATCH):
-    await db.hotels.edit(hotel_data, exclude_unset=True, id=hotel_id)
-    await db.commit()
+    await HotelService(db).partial_update_hotel(hotel_id, hotel_data)
     return {"status": "OK"}
-
-
-@router.get("/{hotel_id}", summary="Получить отель по его id")
-async def get_hotel(db: DBDep, hotel_id: int):
-    try:
-        return await db.hotels.get_one_or_none(id=hotel_id)
-    except ObjectNotFoundException:
-        raise HotelNotFoundException
 
 
 @router.delete("/hotel_id", summary="Удаляем отель")
 async def delete_hotel(db: DBDep, hotel_id: int):
-    await db.hotels.delete(id=hotel_id)
-    await db.commit()
+    await HotelService(db).delete_hotel(hotel_id)
     return {"status": "OK"}

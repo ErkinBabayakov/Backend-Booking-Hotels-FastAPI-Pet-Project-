@@ -13,12 +13,13 @@ from tests.conftest import get_db_null_pool
         (1, "2026-08-03", "2026-09-03", 200),
         (1, "2026-08-04", "2026-09-04", 200),
         (1, "2026-08-05", "2026-09-05", 200),
-        (1, "2026-08-06", "2026-09-06", 500),
+        (1, "2026-08-06", "2026-09-06", 409),
         (1, "2026-09-07", "2026-09-10", 200),
     ],
 )
 async def test_add_booking(room_id, date_from, date_to, status_code, db: DBManager, authenticated_ac: AsyncClient):
     # room_id = (await db.rooms.get_all())[0].id
+    await authenticated_ac.post("/auth/login", json={"email": "kot1@pes.com", "password": "1234"})
     response = await authenticated_ac.post(
         "/bookings",
         json={
