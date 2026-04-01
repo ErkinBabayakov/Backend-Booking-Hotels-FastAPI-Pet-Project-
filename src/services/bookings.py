@@ -13,7 +13,6 @@ class BookingService(BaseService):
     async def get_me(self, user_id: UserIdDep):
         return await self.db.bookings.get_filtered(user_id=user_id)
 
-
     async def add_booking(self, user_id: UserIdDep, booking_data: BookingAddRequest):
         # Получаем цену номера
         try:

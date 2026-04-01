@@ -17,7 +17,9 @@ from tests.conftest import get_db_null_pool
         (1, "2026-09-07", "2026-09-10", 200),
     ],
 )
-async def test_add_booking(room_id, date_from, date_to, status_code, db: DBManager, authenticated_ac: AsyncClient):
+async def test_add_booking(
+    room_id, date_from, date_to, status_code, db: DBManager, authenticated_ac: AsyncClient
+):
     # room_id = (await db.rooms.get_all())[0].id
     await authenticated_ac.post("/auth/login", json={"email": "kot1@pes.com", "password": "1234"})
     response = await authenticated_ac.post(

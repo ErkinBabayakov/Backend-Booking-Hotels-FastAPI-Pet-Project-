@@ -25,6 +25,7 @@ def upgrade() -> None:
         None, "rooms_facilities", "rooms", ["room_id"], ["id"], ondelete="CASCADE"
     )
 
+
 def downgrade() -> None:
     """Downgrade schema."""
     op.drop_constraint(None, "rooms_facilities", type_="foreignkey")
@@ -35,4 +36,3 @@ def downgrade() -> None:
         ["room_id"],
         ["id"],
     )
-

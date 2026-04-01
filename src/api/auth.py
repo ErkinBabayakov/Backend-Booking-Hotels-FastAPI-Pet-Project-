@@ -1,10 +1,15 @@
 from fastapi import APIRouter, Response
 
-from src.exceptions import (UserAlreadyExistsException,
-    UserEmailAlreadyExistsHTTPException, EmailNotRegisteredException,
+from src.exceptions import (
+    UserAlreadyExistsException,
+    UserEmailAlreadyExistsHTTPException,
+    EmailNotRegisteredException,
     EmailNotRegisteredHTTPException,
-    IncorrectPasswordException, IncorrectPasswordHTTPException,
-    UserNotFoundHTTPException, UserNotFoundException)
+    IncorrectPasswordException,
+    IncorrectPasswordHTTPException,
+    UserNotFoundHTTPException,
+    UserNotFoundException,
+)
 from src.services.auth import AuthService
 from src.schemas.users import UserRequestAdd
 from src.api.dependencies import UserIdDep, DBDep
@@ -36,8 +41,6 @@ async def login_user(
     except IncorrectPasswordException:
         raise IncorrectPasswordHTTPException
 
-
-
     response.set_cookie("access_token", access_token)
     return {"access_token": access_token}
 
@@ -48,7 +51,6 @@ async def get_me(db: DBDep, user_id: UserIdDep):
         return await AuthService(db).get_me(user_id)
     except UserNotFoundException:
         raise UserNotFoundHTTPException
-
 
 
 @router.post("/logout", summary="Выйти")

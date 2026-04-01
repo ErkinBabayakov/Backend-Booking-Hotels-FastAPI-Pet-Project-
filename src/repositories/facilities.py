@@ -16,7 +16,7 @@ class RoomFacilityRepository(BaseRepository):
     mapper = RoomWithFacilityDataMapper
 
     async def set_room_facilities(self, room_id: int, facilities_ids: list[int]) -> None:
-        current_facilities_ids_query = select(self.model.facility_id).filter_by(room_id=room_id) # type: ignore
+        current_facilities_ids_query = select(self.model.facility_id).filter_by(room_id=room_id)  # type: ignore
         res = await self.session.execute(current_facilities_ids_query)
         current_facilities_ids: Sequence[int] = res.scalars().all()
 
@@ -25,13 +25,13 @@ class RoomFacilityRepository(BaseRepository):
 
         if ids_to_delete:
             delete_m2m_facilities_stat = delete(self.model).filter(
-                self.model.room_id == room_id, # type: ignore
-                self.model.facility_id.in_(ids_to_delete), # type: ignore
+                self.model.room_id == room_id,  # type: ignore
+                self.model.facility_id.in_(ids_to_delete),  # type: ignore
             )
             await self.session.execute(delete_m2m_facilities_stat)
 
         if ids_to_insert:
-            insert_m2m_facilities_stat = insert(self.model).values( # type: ignore
+            insert_m2m_facilities_stat = insert(self.model).values(  # type: ignore
                 [{"room_id": room_id, "facility_id": f_id} for f_id in ids_to_insert]
             )
             await self.session.execute(insert_m2m_facilities_stat)

@@ -29,12 +29,14 @@ async def get_hotels(
         date_to,
     )
 
+
 @router.get("/{hotel_id}", summary="Получить отель по его id")
 async def get_hotel(db: DBDep, hotel_id: int):
     try:
         return await HotelService(db).get_hotel(hotel_id)
     except ObjectNotFoundException:
         raise HotelNotFoundException
+
 
 @router.post("", summary="Создаем отель")
 async def create_hotel(

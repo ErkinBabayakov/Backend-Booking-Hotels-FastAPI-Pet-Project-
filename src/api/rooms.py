@@ -28,7 +28,6 @@ async def get_room(db: DBDep, room_id: int, hotel_id: int):
         raise RoomNotFoundHTTPException
 
 
-
 @router.post("/{hotel_id}/rooms", summary="Создать номер отеля")
 async def create_room(db: DBDep, hotel_id: int, room_data: RoomAddRequest = Body()):
     await HotelService(db).get_hotel_with_check(hotel_id)

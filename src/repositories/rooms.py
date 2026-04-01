@@ -17,9 +17,9 @@ class RoomsRepository(BaseRepository):
         rooms_ids_to_get = rooms_ids_for_booking(date_from, date_to, hotel_id)
 
         query = (
-            select(self.model) # type: ignore
-            .options(selectinload(self.model.facilities)) # type: ignore
-            .filter(RoomsOrm.id.in_(rooms_ids_to_get)) # type: ignore
+            select(self.model)  # type: ignore
+            .options(selectinload(self.model.facilities))  # type: ignore
+            .filter(RoomsOrm.id.in_(rooms_ids_to_get))  # type: ignore
         )
         result = await self.session.execute(query)
         return [
@@ -28,11 +28,11 @@ class RoomsRepository(BaseRepository):
 
     async def get_one_or_none_with_rels(self, **filter_by):
         query = (
-            select(self.model).options(selectinload(self.model.facilities)).filter_by(**filter_by) # type: ignore
+            select(self.model).options(selectinload(self.model.facilities)).filter_by(**filter_by)  # type: ignore
         )
         result = await self.session.execute(query)
         try:
-           model = result.scalar_one()
+            model = result.scalar_one()
         except NoResultFound:
             raise RoomNotFoundException
         return RoomDataWithRelsMapper.map_to_domain_entity(model)

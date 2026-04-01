@@ -9,7 +9,6 @@ def rooms_ids_for_booking(
     date_to: date,
     hotel_id: int | None = None,
 ) -> Select:
-
     rooms_count = (
         select(BookingsOrm.room_id, func.count("*").label("rooms_booked"))
         .select_from(BookingsOrm)
@@ -42,7 +41,7 @@ def rooms_ids_for_booking(
         .select_from(rooms_left_table)
         .filter(
             rooms_left_table.c.room_left > 0,
-            rooms_left_table.c.room_id.in_(rooms_ids_for_hotel_subq), # type: ignore
+            rooms_left_table.c.room_id.in_(rooms_ids_for_hotel_subq),  # type: ignore
         )
     )
 

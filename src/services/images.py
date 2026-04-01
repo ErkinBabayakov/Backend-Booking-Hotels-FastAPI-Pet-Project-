@@ -7,6 +7,7 @@ from src.tasks.tasks import resize_image
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+
 class ImageService(BaseService):
     def upload_image(self, file: UploadFile):
         image_path = f"{BASE_DIR}/src/static/images/{file.filename}"

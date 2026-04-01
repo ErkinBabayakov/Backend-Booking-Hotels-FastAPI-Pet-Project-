@@ -21,6 +21,7 @@ from src.api.images import router as images_router
 
 logging.basicConfig(level=logging.INFO)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await redis_connector.connect()
@@ -28,6 +29,7 @@ async def lifespan(app: FastAPI):
     logging.info("FastAPI Cache initialized")
     yield
     await redis_connector.close()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -42,10 +44,10 @@ app.include_router(images_router)
 @app.get("/", response_class=HTMLResponse, tags=["Главная страница документации"])
 def home():
     return """
-    <h2><a href="http://127.0.0.1:8000/docs">Documentation</a><br></h2>
-    <h2><a href="http://127.0.0.1:8000/redoc">ReDoc</a></h2>
+    <h2><a href="http://0.0.0.0:8000/docs">Documentation</a><br></h2>
+    <h2><a href="http://0.0.0.0:8000/redoc">ReDoc</a></h2>
     """
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True, host="127.0.0.1", port=8000)
+    uvicorn.run("main:app", reload=True, host="0.0.0.0", port=8000)

@@ -1,6 +1,10 @@
 from datetime import date
 
-from src.exceptions import check_date_to_after_date_from, ObjectNotFoundException, RoomNotFoundException
+from src.exceptions import (
+    check_date_to_after_date_from,
+    ObjectNotFoundException,
+    RoomNotFoundException,
+)
 from src.schemas.facilities import RoomFacilityAdd
 from src.schemas.rooms import Room, RoomAddRequest, RoomAdd, RoomPatchRequest, RoomPatch
 from src.services.base import BaseService
@@ -8,12 +12,7 @@ from src.services.hotels import HotelService
 
 
 class RoomService(BaseService):
-    async def get_rooms(
-            self,
-            hotel_id: int,
-            date_from: date,
-            date_to: date
-) -> list[Room]:
+    async def get_rooms(self, hotel_id: int, date_from: date, date_to: date) -> list[Room]:
         check_date_to_after_date_from(date_from, date_to)
         rooms = await self.db.rooms.get_filtered_by_time(
             hotel_id=hotel_id, date_from=date_from, date_to=date_to
@@ -40,7 +39,9 @@ class RoomService(BaseService):
         _room_data = RoomAdd(hotel_id=hotel_id, **room_data.model_dump(exclude_unset=True))
         await self.db.rooms.edit(_room_data, id=room_id)
 
-        await self.db.room_facility.set_room_facilities(room_id, facilities_ids=room_data.facilities_ids)
+        await self.db.room_facility.set_room_facilities(
+            room_id, facilities_ids=room_data.facilities_ids
+        )
         await self.db.commit()
 
     async def partial_update_room(self, hotel_id: int, room_id: int, room_data: RoomPatchRequest):
@@ -63,7 +64,7 @@ class RoomService(BaseService):
         await self.db.rooms.delete(hotel_id=hotel_id, id=room_id)
         await self.db.commit()
 
-    async def get_room_with_check(self,room_id: int) -> None:
+    async def get_room_with_check(self, room_id: int) -> None:
         try:
             await self.db.rooms.get_one(id=room_id)
         except ObjectNotFoundException:

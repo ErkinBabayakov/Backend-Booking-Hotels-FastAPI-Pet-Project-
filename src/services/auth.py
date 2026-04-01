@@ -11,7 +11,9 @@ from src.exceptions import (
     EmailNotRegisteredException,
     IncorrectPasswordException,
     ObjectAlreadyExistsException,
-    UserAlreadyExistsException, ObjectNotFoundException, UserNotFoundException
+    UserAlreadyExistsException,
+    ObjectNotFoundException,
+    UserNotFoundException,
 )
 
 
@@ -50,7 +52,6 @@ class AuthService(BaseService):
         except ObjectAlreadyExistsException as ex:
             raise UserAlreadyExistsException from ex
 
-
     async def login_user(self, data: UserRequestAdd):
         user = await self.db.users.get_user_with_hash_password(email=data.email)
         if not user:
@@ -62,7 +63,7 @@ class AuthService(BaseService):
 
     async def get_me(self, user_id: int):
         try:
-            user =  await self.db.users.get_one(id=user_id)
+            user = await self.db.users.get_one(id=user_id)
             return user
         except ObjectNotFoundException as ex:
             raise UserNotFoundException from ex
