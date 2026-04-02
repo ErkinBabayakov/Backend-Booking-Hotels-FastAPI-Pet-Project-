@@ -5,7 +5,7 @@ import sys
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from pathlib import Path
-from fastapi.responses import HTMLResponse
+
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
@@ -41,12 +41,6 @@ app.include_router(facilities_router)
 app.include_router(images_router)
 
 
-@app.get("/", response_class=HTMLResponse, tags=["Главная страница документации"])
-def home():
-    return """
-    <h2><a href="http://0.0.0.0:8000/docs">Documentation</a><br></h2>
-    <h2><a href="http://0.0.0.0:8000/redoc">ReDoc</a></h2>
-    """
 
 
 if __name__ == "__main__":

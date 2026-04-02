@@ -10,7 +10,7 @@ docker network create myNetwork
 docker run --name booking_db \
     -p 6432:5432  \
     -e POSTGRES_USER=abcde \
-    -e POSTGRES_PASSWORD=abcde \
+    -e POSTGRES_PASSWORD=abcde123wdadawdasg \
     -e POSTGRES_DB=booking \
     --network=myNetwork \
     --volume pg-booking-data:/var/lib/postgresql/data \
@@ -30,3 +30,8 @@ docker run --name booking_celery_worker \
     --network=myNetwork \
     booking_image \
     celery --app=src.tasks.celery_app:celery_instance worker -l INFO
+
+docker run --name booking_nginx \
+    --volume ./nginx.conf:/etc/nginx/nginx.conf \
+    --network=myNetwork \
+    --rm -p 80:80 nginx
