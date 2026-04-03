@@ -8,7 +8,7 @@ from src.exceptions import (
     IncorrectPasswordException,
     IncorrectPasswordHTTPException,
     UserNotFoundHTTPException,
-    UserNotFoundException,
+    UserNotFoundException, EmailNotCorrectException, EmailNotCorrectHTTPException,
 )
 from src.services.auth import AuthService
 from src.schemas.users import UserRequestAdd
@@ -24,6 +24,8 @@ async def register_user(db: DBDep, data: UserRequestAdd):
         await AuthService(db).register_user(data)
     except UserAlreadyExistsException:
         raise UserEmailAlreadyExistsHTTPException
+    except EmailNotCorrectException:
+        raise EmailNotCorrectHTTPException
 
     return {"status": "OK"}
 

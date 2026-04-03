@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from pydantic import EmailStr
 
-from sqlalchemy.exc import NoResultFound
-from src.exceptions import EmailNotRegisteredException
+from sqlalchemy.exc import NoResultFound, IntegrityError
+from src.exceptions import EmailNotRegisteredException, EmailNotCorrectException
 from src.repositories.base import BaseRepository
 from src.models.users import UsersOrm
 from src.repositories.mappers.mappers import UserDataMapper
@@ -20,4 +20,6 @@ class UserRepository(BaseRepository):
             model = result.scalars().one()
         except NoResultFound as ex:
             raise EmailNotRegisteredException from ex
+        except IntegrityError as ex:
+            raise EmailNotCorrectException from ex
         return UserWithHashPassword.model_validate(model)

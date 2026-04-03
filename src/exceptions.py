@@ -40,6 +40,9 @@ class IncorrectTokenException(BronirovanieException):
 class EmailNotRegisteredException(BronirovanieException):
     detail = "Пользователь с таким email не зарегистрирован"
 
+class EmailNotCorrectException(BronirovanieException):
+    detail = "Неправильно введён email. Введите корректный email"
+
 
 class IncorrectPasswordException(BronirovanieException):
     detail = "Неверный пароль"
@@ -108,3 +111,9 @@ class IncorrectPasswordHTTPException(BronirovanieHTTPException):
 class NoAccessTokenHTTPException(BronirovanieHTTPException):
     status_code = 401
     detail = "Вы не предоставили токен доступа"
+
+class EmailNotCorrectHTTPException(BronirovanieHTTPException):
+    status_code = 401
+    detail = "Неправильно введён email. Введите корректный email"
+
+

@@ -3,9 +3,11 @@ import uvicorn
 import sys
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from pathlib import Path
 
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from starlette.responses import HTMLResponse
@@ -40,6 +42,14 @@ app.include_router(rooms_router)
 app.include_router(bookings_router)
 app.include_router(facilities_router)
 app.include_router(images_router)
+
+#Обработчик для перехвата 422 статус-кода (Ошибка валидации Pydantic)
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        content="Проверьте правильность вводимого email-адреса"
+    )
 
 
 @app.get("/", response_class=HTMLResponse, tags=["Главная страница документации"])
